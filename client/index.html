@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>chatterbox</title>
+    <title>Twittler</title>
     <link rel="stylesheet" href="styles/styles.css">
 
     <!-- dependencies -->
@@ -14,16 +14,23 @@
   </head>
   <body>
     <div id="main">
-      <h1>chatterbox</h1>
+      <h1>twittler</h1>
       <form>
-      <input id="newmessage" type=TEXT placeholder="Got Something to Say">
-      <input id="submit" type=BUTTON value="submit" onclick="insertMessage()">
+        <input id="newmessage" type=TEXT placeholder="Got Something to Say">
+        <input id="submit" type=BUTTON value="submit" onclick="insertMessage()">
+        <select id="rooms" onchange="switchRoom();">
+          <option value="create">Create New Room</option>
+        </select>
+        <br>
+      <button id="update" type=BUTTON onclick="getMessages()">Update Messages</button>
       </form>
-      <select id="rooms">
-        <option value="4Chan">Create New Room</option>
-      </select>
     <div id="posts"></div>
       <!-- Your HTML goes here! -->
     </div>
-  </body
+    <script>
+     $('.NSA').on('click', function() {
+        console.log("hello");
+      })
+     </script>
+  </body>
 </html>

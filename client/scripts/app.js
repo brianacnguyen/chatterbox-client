@@ -1,9 +1,6 @@
 // YOUR CODE HERE:
 //The URL you should be using is https://api.parse.com/1/classes/chatterbox
-//when click on room name, clear messages and post message with room names as property
 //create a separate button to add room, prompt for room name anfdi add
-//use ajax to get the current room names, loop over it
-//use jquery to select ("select") apppend option with text of current room names
 /////////////////////ESCAPE FUNCTION/////////////////////////////////
 var entityMap = {
     "&": "&amp;",
@@ -31,11 +28,15 @@ var insertMessage = function() {
   var getText = function() {
     return escapeHtml($('form #newmessage').val());
   };
+
+  var getRoom = function(){
+  return escapeHtml($('#rooms').val());
+};
+
   var Message = function() {
     this.username = getUsername();
     this.text = getText();
-    //need to edit this to get currently viewing room
-    this.roomname = '4chan';
+    this.roomname = getRoom();
   };
   var message = new Message();
   
@@ -53,38 +54,96 @@ var insertMessage = function() {
       console.error('chatterbox: Failed to send message. Error: ', data);
     }
   });
+  setTimeout(getMessages, 500);
 };
 
-//////////////////MESSAGE/ROOM UPDATE//////////////////////////////////
-setInterval(function() {
-$.ajax({
-  // This is the url you should use to communicate with the parse API server.
-  url: 'https://api.parse.com/1/classes/chatterbox?order=-createdAt',
-  type: 'GET',
-  contentType: 'application/json',
-  success: function(data) {
-    getNewMessages(data); 
-  },
-  error: function (data) {
-    // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
-    console.error('chatterbox: Failed to retrieve message. Error: ', data);
-  }
-});
-},1000);
+//////////////////MESSAGE UPDATE//////////////////////////////////
+var currentData;
+var getMessages = function(param) {  // getMessages(roomname)
 
-var getNewMessages = function(data) {
-  $('#posts').empty();
+  if (param === undefined){
+    param = 'order=-createdAt'
+  }
+
+  $.ajax({
+    // This is the url you should use to communicate with the parse API server.
+    url: 'https://api.parse.com/1/classes/chatterbox?' + param,
+    type: 'GET',
+    contentType: 'application/json',
+    success: function(data) {
+      getRooms(data);
+      currentData = data.results;
+      switchRoom();//displayMessages(data); 
+    },
+    error: function (data) {
+      // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+      console.error('chatterbox: Failed to retrieve message. Error: ', data);
+    }
+  });
+};
+
+setTimeout(getMessages, 500); 
+
+
+//////////////////UPDATING ROOM SELECTION//////////////////////////////////
+var switchRoom = function() {
+  // console.log("You are switching rooms");
+   $('#posts').empty();
+
+    var room = escapeHtml($('#rooms').val());
+    // console.log(room);
+    if (room === 'Create A New Room') {
+      createNewRoom();
+    } else if (room === "Main Room") {
+      for (var i = 0; i < currentData.length; i++) {
+        var messageObj = currentData[i];
+        var user = escapeHtml(messageObj.username);
+        var message = escapeHtml(messageObj.text);
+        $('#posts').append($('<p class="users" id ="' + user + '" >' + user + '</p>'));
+        $('#posts').append($('<div class="messages" id ="' + user + '">' + message + '</div>'));
+      }
+    } else {
+      for ( var i = 0; i < currentData.length; i++ ){
+        var messageObj = currentData[i];
+        if (messageObj.roomname === room){
+          var user = escapeHtml(messageObj.username);
+          var message = escapeHtml(messageObj.text);
+          $('#posts').append($('<p class="users" id ="' + user + '" >' + user + '</p>'));
+          $('#posts').append($('<div class="messages" id ="' + user + '">' + message + '</div>'));
+
+        }
+      }
+    }
+  };
+
+  var createNewRoom = function() {
+    var newRoomName = escapeHtml(prompt("What do you want to name your Room? Reminder: Your room wont be added until you initiate a conversation."));
+    $('#rooms').prepend($('<option id="' + newRoomName + '" value= "' + newRoomName + '">' + newRoomName + '</option>'));
+  };
+///// POPULATES THE DROPDOWN WITH ALL AVAILABLE ROOMS///////////
+var getRooms = function(data) {
   $('#rooms').empty();
   var rooms = {};
   for (var i = 0; i < data.results.length; i++) {
         var room = escapeHtml(data.results[i].roomname);
-        var user = escapeHtml(data.results[i].username);
-        var message = escapeHtml(data.results[i].text);
-        $('#posts').append($('<p>' + user + ': ' + message + '</p>'));
         rooms[room] = true;
   }
+  $('#rooms').append($('<option id=mainroom>Main Room</option>'));
   for (var key in rooms) {
     $('#rooms').append($('<option id="' + key + '" value= "' + key + '">' + key + '</option>'));
   }
-}
-//////////////////UPDATING ROOM SELECTION//////////////////////////////////
+   $('#rooms').append($('<option id=createNewRoom>Create A New Room</option>'));
+};
+
+$(function() {
+  $("#posts").on('click', 'p', function() {
+      var user = $(this).attr('id');
+      $('#posts #' + user ).addClass('friends');
+  });
+});
+
+
+
+// outstanding issues
+  //submit sends you back to main room... doesn't keep you in same place
+  
