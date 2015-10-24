@@ -7,14 +7,42 @@
 
     <!-- dependencies -->
     <script src="bower_components/jquery/jquery.min.js"></script>
-    <!-- your scripts -->
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/backbone/backbone.js"></script>
+    <!-- scripts -->
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
+    <script src="scripts/escapeHtml.js"></script>
+    <!-- data -->
+    <script src="BB-data/currentData.js"></script>
+    <!-- models -->
+    <script src="BB-models/01-mainModel.js"></script>
+    <script src="BB-models/03-insertMessageFormSubmitModel.js"></script>
+    <script src="BB-models/04-selectRoomModel.js"></script>
+    <script src="BB-models/05-updateMessagesButtonModel.js"></script>
+    <script src="BB-models/06-messageModel.js"></script>
+    <!-- collections -->
+    <script src="BB-collections/06-messagesContainerCollection.js"></script>
+    <!-- views -->
+    <script src="BB-views/01-mainView.js"></script>
+    <script src="BB-views/02-titleView.js"></script>
+    <script src="BB-views/03-insertMessageFormSubmitView.js"></script>
+    <script src="BB-views/03-insertMessageFormView.js"></script>
+    <script src="BB-views/04-selectRoomView.js"></script>
+    <script src="BB-views/05-updateMessagesButtonView.js"></script>
+    <script src="BB-views/06-messageEntryView.js"></script>
+    <script src="BB-views/06-messagesContainerView.js"></script>
+    <!-- Initializing script -->
+    <script>
+      $(function() {
+        var currentdata = new MessagesContainerCollection(fetchedData);
+        var main = new MainModel({currentdata: currentdata});
+        var mainView = new MainView({model: main});
+        $('body').append(mainView.render()); 
+      });
+    </script>
+
   </head>
   <body>
-    <div id="main">
-      <h1>chatterbox</h1>
-      <!-- Your HTML goes here! -->
-    </div>
   </body>
 </html>
