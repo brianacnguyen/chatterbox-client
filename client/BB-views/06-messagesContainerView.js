@@ -1,27 +1,12 @@
 var MessagesContainerView = Backbone.View.extend({
+	tagName: 'div id="posts"',
 	initialize: function(){
-		this.fetch();
-	},
-	fetch: function() {
-		var context = this;
-		$.ajax({
-			url: fetchServer,
-			type: 'GET',
-			contentType: 'application/json',
-			data: {order: '-createdAt'},
-			success: function(data) {
-				fetchedData = data.results;
-				context.render();
-			},
-			error: function (data) {
-				console.error('chatterbox: Failed to retrieve message. Error: ', data);
-			}
-		});
+		this.render();
 	},
 	render: function(){
+		$('#posts').empty();
 		this.$el.children().detach();
-		this.$el.html('<div id="posts></div>').append(
-			this.collection.map(function(message) {
+		this.$el.html(this.collection.map(function(message) {
 				return new MessageEntryView({model: message}).render();
 			})
 		)

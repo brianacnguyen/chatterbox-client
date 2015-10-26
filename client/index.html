@@ -9,12 +9,12 @@
     <script src="bower_components/jquery/jquery.min.js"></script>
     <script src="bower_components/underscore/underscore.js"></script>
     <script src="bower_components/backbone/backbone.js"></script>
+    <!-- data -->
+    <script src="BB-data/currentData.js"></script>
     <!-- scripts -->
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/escapeHtml.js"></script>
-    <!-- data -->
-    <script src="BB-data/currentData.js"></script>
     <!-- models -->
     <script src="BB-models/01-mainModel.js"></script>
     <script src="BB-models/03-insertMessageFormSubmitModel.js"></script>
@@ -28,6 +28,7 @@
     <script src="BB-views/02-titleView.js"></script>
     <script src="BB-views/03-insertMessageFormSubmitView.js"></script>
     <script src="BB-views/03-insertMessageFormView.js"></script>
+    <script src="BB-views/04-selectRoomEntryView.js"></script>
     <script src="BB-views/04-selectRoomView.js"></script>
     <script src="BB-views/05-updateMessagesButtonView.js"></script>
     <script src="BB-views/06-messageEntryView.js"></script>
@@ -35,8 +36,8 @@
     <!-- Initializing script -->
     <script>
       $(function() {
-        var currentdata = new MessagesContainerCollection(fetchedData);
-        var main = new MainModel({currentdata: currentdata});
+        var currentData = new MessagesContainerCollection(fetchedData);
+        var main = new MainModel({currentData: currentData});
         var mainView = new MainView({model: main});
         $('body').append(mainView.render()); 
       });

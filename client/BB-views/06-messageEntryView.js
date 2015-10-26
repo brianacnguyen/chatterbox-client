@@ -1,9 +1,14 @@
 var MessageEntryView = Backbone.View.extend({
-	template: _.template('<p class="users" id="<%= username %>"><%= username %></p>template<br><div class="messages" id="<%= username %>"><%= text %></div>'),
-	events: {
-
-	},
 	render: function(){
-		return this.$el.html(this.template(this.mode.attributes));
+		var thisMessage = this.model.attributes;
+		var thisEscapedMessage = {};
+		for (var key in thisMessage) {
+			var newKey = escapeHtml(key);
+			var newValue = escapeHtml(thisMessage[key]);
+			thisEscapedMessage[newKey] = newValue;
+		};
+		var username = thisEscapedMessage.username;
+		var text = thisEscapedMessage.text; 
+		return this.$el.html('<p class="users" id="' + username + '">'+ username + '</p><div class="messages" id="'+ username + '">'+ text + '</div>');
 	}
 });

@@ -1,4 +1,14 @@
 var SelectRoomView = Backbone.View.extend({
-	initialize: function(){},
-	render: function(){},
+	tagName: 'select id="rooms"',
+	initialize: function() {
+		this.render();
+	},
+	render: function(){
+		$('#rooms').empty();
+		this.$el.children().detach();
+		this.$el.html(this.collection.map(function(message) {
+			return new SelectRoomEntryView({model: message}).render();
+		})
+		)
+	}
 });
